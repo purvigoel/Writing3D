@@ -230,8 +230,9 @@ class MoveAction(object):
     @property
     def end_string(self):
         script_text = []
-        script_text.extend(["W3D_LOG.debug('PLACEMENT IS {} relative to {} at end')".format(
+        script_text.extend(["W3D_LOG.debug('PLACEMENT IS {} relative to {} at the end')".format(
             self.placement["position"], self.placement["relative_to"])])
+        script_text.extend(["W3D_LOG.debug('Index: {}'.format(index))"])
         if not self.duration:
             if self.placement["rotation"]["rotation_mode"] != "None":
                 script_text.append(
