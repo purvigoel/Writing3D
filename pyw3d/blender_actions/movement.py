@@ -143,7 +143,7 @@ class MoveAction(object):
                         "rotation_matrix.col[2] = frame_z",
                         "rotation = rotation_matrix.to_quaternion()"]
                     )
-
+        
             script_text.extend([
                 "blender_object['angV'] = (",
                 "    rotation.angle /",
@@ -151,8 +151,10 @@ class MoveAction(object):
                     ("({}*bge.logic.getLogicTicRate()) *".format(
                         self.duration), 1)[
                         self.duration == 0]),
-                "    rotation.axis)"]
+                "    rotation.axis)",
+                "W3D_LOG.debug('here')"]
             )
+        
         # ...and now take care of object position
         if "position" in self.placement:
             if self.move_relative:
@@ -192,7 +194,8 @@ class MoveAction(object):
                         ("({}*bge.logic.getLogicTicRate())".format(
                             self.duration), 1)[self.duration == 0])]
                 )
-
+        script_text.extend(["W3D_LOG.debug('PLACEMENT IS {} relative to {} at start')".format(
+            self.placement["position"], self.placement["relative_to"])])
         try:
             script_text[0] = "{}{}".format(
                 "    " * self.offset, script_text[0])
@@ -227,6 +230,8 @@ class MoveAction(object):
     @property
     def end_string(self):
         script_text = []
+        script_text.extend(["W3D_LOG.debug('PLACEMENT IS {} relative to {} at end')".format(
+            self.placement["position"], self.placement["relative_to"])])
         if not self.duration:
             if self.placement["rotation"]["rotation_mode"] != "None":
                 script_text.append(
@@ -242,6 +247,7 @@ class MoveAction(object):
                     "    blender_object['linV'][i]",
                     "    for i in range(len(blender_object.position))]"]
                 )
+
 
         try:
             script_text[0] = "{}{}".format(
